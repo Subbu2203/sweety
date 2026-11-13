@@ -1,0 +1,9 @@
+### Sweety User Registration
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "name": "Subbu",
+    "email": "subbu.test@example.com",
+    "password": "TestPass123!"
+}
