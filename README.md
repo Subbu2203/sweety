@@ -70,7 +70,7 @@ Create a PostgreSQL database named:
 CREATE DATABASE sweety_db;
 ```
 
-Create the required `users` and `readings` tables using the SQL schema provided with the project.
+Run the SQL commands from `backend/schema.sql` to create the required tables.
 
 ### 4. Start Backend
 
