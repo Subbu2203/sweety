@@ -49,7 +49,7 @@ sweety/
 ### 1. Clone the Repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/Subbu2203/sweety.git
 cd sweety
 ```
 
