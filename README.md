@@ -71,8 +71,15 @@ CREATE DATABASE sweety_db;
 ```
 
 Run the SQL commands from `backend/schema.sql` to create the required tables.
+### 4. Seed Demo Data
 
-### 4. Start Backend
+Run the following command inside the backend folder:
+
+```bash
+node seed.js
+
+
+### 5. Start Backend
 
 ```bash
 node server.js
@@ -80,7 +87,7 @@ node server.js
 
 Backend runs at `http://localhost:5000`.
 
-### 5. Frontend Setup
+### 6. Frontend Setup
 
 Open another terminal:
 
@@ -112,6 +119,20 @@ Frontend runs at `http://localhost:5173`.
 - User-specific reading access
 - Input validation
 
+
+## Notes
+
+### Assumptions
+- Each user can add a maximum of four readings per day.
+- Each time slot can have only one reading per day.
+- Glucose values are stored in mg/dL.
+- Users can only access their own readings.
+
+### Future Improvements
+- Add automated backend and frontend tests.
+- Add pagination for reading history.
+- Improve validation and error handling.
+- Add Docker support.
 ## Author
 
 Developed as a full-stack web development project.

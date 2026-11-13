@@ -10,19 +10,49 @@ router.post("/", verifyToken, async (req, res) => {
         const { reading_value, reading_date, time_slot } = req.body;
 
         // Validate input
-        if (!reading_value || !reading_date || !time_slot) {
+        if (reading_value === undefined || reading_value === null || reading_value === "" || !reading_date || !time_slot) {
             return res.status(400).json({
                 success: false,
-                message: "All fields are required"
+                message: "Please enter a glucose value."
             });
         }
+
+
+
+        // Validate reading date
+        const today = new Date().toLocaleDateString("en-CA", {
+            timeZone: "Asia/Kolkata"
+        });
+
+        if (reading_date > today) {
+            return res.status(400).json({
+                success: false,
+                message: "Date cannot be in the future."
+            });
+        }
+
 
         // Validate glucose value
         if (!Number.isInteger(reading_value) ||
             reading_value < 40 || reading_value > 600) {
             return res.status(400).json({
                 success: false,
-                message: "Reading must be between 40 and 600"
+                message: "Value must be between 40 and 600 mg/dl."
+            });
+        }
+
+        // Validate maximum 4 readings per day
+        const countResult = await pool.query(
+            `SELECT COUNT(*)::INTEGER AS count
+     FROM readings
+     WHERE user_id = $1 AND reading_date = $2`,
+            [req.user.id, reading_date]
+        );
+
+        if (countResult.rows[0].count >= 4) {
+            return res.status(400).json({
+                success: false,
+                message: "You can add only 4 readings per day."
             });
         }
 
@@ -162,10 +192,21 @@ router.put("/:id", verifyToken, async (req, res) => {
         const { reading_value, reading_date, time_slot } = req.body;
         const { id } = req.params;
 
-        if (!reading_value || !reading_date || !time_slot) {
+        if (reading_value === undefined || reading_value === null || reading_value === "" || !reading_date || !time_slot) {
             return res.status(400).json({
                 success: false,
-                message: "All fields are required"
+                message: "Please enter a glucose value."
+            });
+        }
+        // Validate reading date
+        const today = new Date().toLocaleDateString("en-CA", {
+            timeZone: "Asia/Kolkata"
+        });
+
+        if (reading_date > today) {
+            return res.status(400).json({
+                success: false,
+                message: "Date cannot be in the future."
             });
         }
 
@@ -173,7 +214,24 @@ router.put("/:id", verifyToken, async (req, res) => {
             reading_value < 40 || reading_value > 600) {
             return res.status(400).json({
                 success: false,
-                message: "Reading must be between 40 and 600"
+                message: "Value must be between 40 and 600 mg/dl."
+            });
+        }
+
+        // Validate maximum 4 readings per day
+        const countResult = await pool.query(
+            `SELECT COUNT(*)::INTEGER AS count
+     FROM readings
+     WHERE user_id = $1
+     AND reading_date = $2
+     AND id != $3`,
+            [req.user.id, reading_date, id]
+        );
+
+        if (countResult.rows[0].count >= 4) {
+            return res.status(400).json({
+                success: false,
+                message: "You can add only 4 readings per day."
             });
         }
 
